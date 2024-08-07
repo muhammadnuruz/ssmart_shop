@@ -25,7 +25,7 @@ async def get_guarantees_function(msg: types.Message, state: FSMContext):
 async def get_guarantees_function_2(msg: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['shop'] = msg.text.split('.')[0]
-    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{msg.from_user.id}/").content)
+    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{msg.from_user.id}/").content)
     await state.set_state('guarantees_2')
     if tg_user['language'] == 'uz':
         await msg.answer(text="Mahsulot turini tanlang 👇", reply_markup=await get_types_button(lang='uz'))
@@ -38,7 +38,7 @@ async def get_guarantees_function_2(msg: types.Message, state: FSMContext):
 async def get_guarantees_function_3(msg: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['type'] = msg.text.split('.')[0]
-    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{msg.from_user.id}/").content)
+    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{msg.from_user.id}/").content)
     await state.set_state('guarantees_3')
     if tg_user['language'] == 'uz':
         await msg.answer(text="Seria raqamini kiriting:", reply_markup=await back_main_menu_button(msg.from_user.id))
@@ -51,7 +51,7 @@ async def get_guarantees_function_3(msg: types.Message, state: FSMContext):
 async def get_guarantees_function_4(msg: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['serial_number'] = msg.text
-    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{msg.from_user.id}/").content)
+    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{msg.from_user.id}/").content)
     await state.set_state('guarantees_4')
     if tg_user['language'] == 'uz':
         await msg.answer(
@@ -73,12 +73,12 @@ Misol: <b>15-07-2024</b>""",
 
 @dp.message_handler(state='guarantees_4')
 async def process_date(msg: types.Message, state: FSMContext):
-    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{msg.from_user.id}/").content)
+    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{msg.from_user.id}/").content)
     try:
         date_obj = datetime.strptime(msg.text, '%d-%m-%Y')
         formatted_date = date_obj.strftime('%Y-%m-%d')
         tg_user = json.loads(
-            requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{msg.from_user.id}/").content)
+            requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{msg.from_user.id}/").content)
         async with state.proxy() as data:
             pass
         data_2 = {
@@ -89,7 +89,7 @@ async def process_date(msg: types.Message, state: FSMContext):
             "user": tg_user['id']
         }
         await state.finish()
-        response = json.loads(requests.post(url=f"http://127.0.0.1:8000/guarantes/create/", data=data_2).content)
+        response = json.loads(requests.post(url=f"http://127.0.0.1:8001/guarantes/create/", data=data_2).content)
         if tg_user['language'] == 'uz':
             await msg.answer(f"""
 Sizning {response['id']} - raqamli arizangizga asosan Kafolat taloni ruyhatga olindi

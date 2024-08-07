@@ -33,7 +33,7 @@ async def back_main_menu_function_1(msg: types.Message, state: FSMContext):
 
 @dp.message_handler(CommandStart())
 async def start_handler(msg: types.Message, state: FSMContext):
-    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{msg.from_user.id}/").content)
+    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{msg.from_user.id}/").content)
     try:
         if tg_user['detail']:
             await state.set_state('language_1')
@@ -49,7 +49,7 @@ Tilni tanlang
                 "full_name": msg.from_user.full_name,
                 "language": 'uz'
             }
-            requests.post(url=f"http://127.0.0.1:8000/telegram-users/create/", data=data)
+            requests.post(url=f"http://127.0.0.1:8001/telegram-users/create/", data=data)
     except KeyError:
         if tg_user.get('language') == 'uz':
             await msg.answer(text=f"Bot yangilandi ♻️", reply_markup=await main_menu_buttons(msg.from_user.id))
@@ -59,14 +59,14 @@ Tilni tanlang
 
 @dp.callback_query_handler(Text(startswith='language_'), state='language_1')
 async def language_function(call: types.CallbackQuery, state: FSMContext):
-    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{call.from_user.id}/").content)
+    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{call.from_user.id}/").content)
     data = {
         "chat_id": str(call.from_user.id),
         "username": call.from_user.username,
         "full_name": call.from_user.full_name,
         "language": call.data.split("_")[-1]
     }
-    requests.put(url=f"http://127.0.0.1:8000/telegram-users/update/{tg_user['id']}/", data=data)
+    requests.put(url=f"http://127.0.0.1:8001/telegram-users/update/{tg_user['id']}/", data=data)
     await call.message.delete()
     await state.set_state('register_1')
     async with state.proxy() as data:
@@ -79,7 +79,7 @@ async def language_function(call: types.CallbackQuery, state: FSMContext):
 
 @dp.message_handler(state='register_1')
 async def register_function(msg: types.Message, state: FSMContext):
-    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{msg.from_user.id}/").content)
+    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{msg.from_user.id}/").content)
     async with state.proxy() as data:
         data['full_name'] = msg.text
     await state.set_state("register_2")
@@ -134,8 +134,8 @@ async def district_handler(msg: types.Message, state: FSMContext):
         'language': data['language']
     }
     tg_user = json.loads(
-        requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{msg.from_user.id}/").content)
-    requests.patch(url=f"http://127.0.0.1:8000/telegram-users/update/{tg_user['id']}/", data=data_2)
+        requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{msg.from_user.id}/").content)
+    requests.patch(url=f"http://127.0.0.1:8001/telegram-users/update/{tg_user['id']}/", data=data_2)
     for admin in admins:
         await bot.send_message(chat_id=admin, text=f"""
 Yangi user🆕
@@ -158,14 +158,14 @@ async def change_language_function_1(msg: types.Message, state: FSMContext):
 
 @dp.callback_query_handler(Text(startswith='language_'))
 async def language_function_1(call: types.CallbackQuery):
-    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{call.from_user.id}/").content)
+    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{call.from_user.id}/").content)
     data = {
         "chat_id": str(call.from_user.id),
         "username": call.from_user.username,
         "full_name": call.from_user.full_name,
         "language": call.data.split("_")[-1]
     }
-    requests.put(url=f"http://127.0.0.1:8000/telegram-users/update/{tg_user['id']}/", data=data)
+    requests.put(url=f"http://127.0.0.1:8001/telegram-users/update/{tg_user['id']}/", data=data)
     await call.message.delete()
     if call.data.split("_")[-1] == 'uz':
         await call.message.answer(text="Til o'zgartirildi 🇺🇿", reply_markup=await main_menu_buttons(call.from_user.id))

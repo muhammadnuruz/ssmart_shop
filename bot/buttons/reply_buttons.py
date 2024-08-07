@@ -8,7 +8,7 @@ from bot.buttons.text import back_main_menu, adverts, none_advert, forward_adver
 
 
 async def main_menu_buttons(chat_id: int):
-    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{chat_id}/").content)
+    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{chat_id}/").content)
     if tg_user['language'] == 'uz':
         design = [
             [get_guarantees],
@@ -25,7 +25,7 @@ async def main_menu_buttons(chat_id: int):
 
 
 async def back_main_menu_button(chat_id: int):
-    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8000/telegram-users/chat_id/{chat_id}/").content)
+    tg_user = json.loads(requests.get(url=f"http://127.0.0.1:8001/telegram-users/chat_id/{chat_id}/").content)
     if tg_user['language'] == 'uz':
         design = [[back_main_menu]]
     else:
@@ -77,7 +77,7 @@ async def get_district_buttons(region_name):
 
 
 async def get_shops_button(lang):
-    shops = json.loads(requests.get(url="http://127.0.0.1:8000/shops/").content)['results']
+    shops = json.loads(requests.get(url="http://127.0.0.1:8001/shops/").content)['results']
     design = []
     for shop in shops:
         design.append([f"{shop['id']}. {shop['name']}"])
@@ -89,7 +89,7 @@ async def get_shops_button(lang):
 
 
 async def get_types_button(lang):
-    shops = json.loads(requests.get(url="http://127.0.0.1:8000/types/").content)['results']
+    shops = json.loads(requests.get(url="http://127.0.0.1:8001/types/").content)['results']
     design = []
     row = []
     for shop in shops:
